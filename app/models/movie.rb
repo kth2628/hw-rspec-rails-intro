@@ -12,5 +12,12 @@ class Movie < ActiveRecord::Base
   end
 
   def self.find_in_tmdb(search_terms)
+    url = "https://api.themoviedb.org/3/search/movie?query=#{search_terms}&api_key=FAKE_KEY"
+    response = Faraday.get(url)
+    json = JSON.parse(response.body)
+    movies = json["results"].map do |result|
+      Movie.new(title: result["title"], release_date: result["release_date"] || nil, rating: "R")
+    end
+    movies
   end
 end

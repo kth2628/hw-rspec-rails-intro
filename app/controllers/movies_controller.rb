@@ -2,7 +2,25 @@ class MoviesController < ApplicationController
   before_action :force_index_redirect, only: [:index]
 
   def search_tmdb
+    if params[:search_terms].blank?
+      flash[:danger] = "Fill in all required fields"
+      redirect_to root_path
+      return
+    end
+
     @movies = Movie.find_in_tmdb(params[:search_terms])
+
+    if @movies.empty?
+      flash.now[:warning] = "No movies found with given params"
+    end
+
+    render 'search_tmdb'
+  end
+
+  def add_movie 
+    @movie = Movie.create!(movie_params)
+    flash[:notice] = "#{movie.title} was successfully added to RottenPotatoes"
+    redirect_to search_movies_path
   end
 
   def show
@@ -69,5 +87,9 @@ class MoviesController < ApplicationController
 
   def sort_by
     params[:sort_by] || session[:sort_by] || 'id'
+  end
+
+  def movie_params
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
 end

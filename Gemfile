@@ -17,6 +17,8 @@ group :test do
   gem 'guard-rspec'                 # automates re-running tests
 end
 
+gem "webmock", '2.3.2'
+
 # for Heroku deployment - as described in Ap. A of ELLS book
 group :development, :test do
   gem 'byebug'

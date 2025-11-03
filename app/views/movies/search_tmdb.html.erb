@@ -4,6 +4,12 @@
 
 <h2>Search in TMDb</h2>
 <%# Part 5 here %>
+<% flash.each do |key, value| %>
+  <div class="alert alert-<%= key == 'danger' ? 'danger' : 'warning' %> alert-dismissible fade show" role="alert">
+    <%= value %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
 
 <div class="search-container">
 <%# Part 1 here %>
@@ -26,3 +32,36 @@
   
 <% end %>
 </div>
+
+<%# Display search results in a table %>
+<% if @movies.present? %>
+  <table class="table mt-4" id="search_movies">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Release Date</th>
+        <th>Language</th>
+        <th>Rating</th>
+        <th>Add</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @movies.each do |movie| %>
+        <tr>
+          <td><%= movie[:title] %></td>
+          <td><%= movie[:release_date] %></td>
+          <td><%= movie[:language] || 'N/A' %></td>
+          <td><%= movie[:rating] || 'R' %></td>
+          <td>
+            <%= form_tag(add_movie_path, method: :post) do %>
+              <%= hidden_field_tag 'movie[title]', movie[:title] %>
+              <%= hidden_field_tag 'movie[release_date]', movie[:release_date] %>
+              <%= hidden_field_tag 'movie[rating]', movie[:rating] || 'R' %>
+              <%= submit_tag 'Add movie', class: 'btn btn-success btn-sm' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
