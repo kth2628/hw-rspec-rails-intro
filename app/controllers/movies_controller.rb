@@ -1,6 +1,10 @@
 class MoviesController < ApplicationController
   before_action :force_index_redirect, only: [:index]
 
+  def search_tmdb
+    @movies = Movie.find_in_tmdb(params[:search_terms])
+  end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
